@@ -18,7 +18,7 @@ String analyzeBytes(uint32_t buttonBits) {
             result = "Left";
             break;
         case 0b110111111111111111111111:
-            result = "+"
+            result = "+";
             break;
         case 0b111011111111111111111111:
             result = "-";
@@ -66,7 +66,7 @@ String analyzeBytes(uint32_t buttonBits) {
             result = "Right";
             break;
         case 0b111111111111111111011111:
-            result = "Power";
+            result = "^";
             break;
         case 0b111111111111111111101111:
             result = "x";
@@ -82,6 +82,70 @@ String analyzeBytes(uint32_t buttonBits) {
             break;
         case 0b111111111111111111111110:
             result = "Enter";
+            break;
+        default:
+            // Handle unrecognized button combinations
+            break;
+    }
+
+    return result;
+}
+
+String buildExpression(uint32_t buttonBits) {
+    String result = ""; // Initialize an empty result string
+
+    // Interpret the button bits using a switch statement
+    switch (buttonBits) {
+        case 0b110111111111111111111111:
+            result = "+";
+            break;
+        case 0b111011111111111111111111:
+            result = "-";
+            break;
+        case 0b111101111111111111111111:
+            result = "7";
+            break;
+        case 0b111110111111111111111111:
+            result = "4";
+            break;
+        case 0b111111011111111111111111:
+            result = "1";
+            break;
+        case 0b111111101111111111111111:
+            result = "0";
+            break;
+        case 0b111111111101111111111111:
+            result = "*";
+            break;
+        case 0b111111111110111111111111:
+            result = "/";
+            break;
+        case 0b111111111111011111111111:
+            result = "8";
+            break;
+        case 0b111111111111101111111111:
+            result = "5";
+            break;
+        case 0b111111111111110111111111:
+            result = "2";
+            break;
+        case 0b111111111111111011111111:
+            result = ".";
+            break;
+        case 0b111111111111111111011111:
+            result = "^";
+            break;
+        case 0b111111111111111111101111:
+            result = "x";
+            break;
+        case 0b111111111111111111110111:
+            result = "9";
+            break;
+        case 0b111111111111111111111011:
+            result = "6";
+            break;
+        case 0b111111111111111111111101:
+            result = "3";
             break;
         default:
             // Handle unrecognized button combinations

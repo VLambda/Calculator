@@ -4,6 +4,7 @@
 #include "TFT_eSPI.h"
 #include "expression.h"
 #include "calc.h"
+#include "math.h"
 
 const int dataPin = 17;   /* Q7 */
 const int clockPin = 21;  /* CP */
@@ -21,6 +22,9 @@ boolean display7 = true;
 boolean display8 = true;
 boolean display9 = true;
 double ox , oy ;
+double x, y;
+double a1, b1, c1, d1, r2, r1, vo, tempC, tempF, tempK;
+
 
 TFT_eSPI tft = TFT_eSPI();       // Invoke custom library
 
@@ -147,6 +151,15 @@ static std::string to_string(double r) {
     return strip_trailing_zeros(str);
 }
 
+std::string replaceAll(std::string str, const std::string& from, const std::string& to) {
+    size_t start_pos = 0;
+    while((start_pos = str.find(from, start_pos)) != std::string::npos) {
+        str.replace(start_pos, from.length(), to);
+        start_pos += to.length(); // Handles case where 'to' is a substring of 'from'
+    }
+    return str;
+}
+
 void setup() {
     Serial.begin(9600);
     pinMode(dataPin, INPUT_PULLDOWN);
@@ -154,6 +167,32 @@ void setup() {
     pinMode(latchPin, OUTPUT);
     tft.init();
     tft.setRotation(1);
+    tft.fillScreen(TFT_WHITE);
+
+    tft.setTextColor(ILI9341_WHITE);
+    tft.setTextSize(2);
+
+    a1 = 3.354016E-03 ;
+    b1 = 2.569850E-04 ;
+    c1 = 2.620131E-06 ;
+    d1 = 6.383091E-08 ;
+
+    for (x = -10; x <= 10; x += .01) {
+
+        std::string expression = "atanh(sin(x))"; // Your generic string expression
+        expression = replaceAll(expression, "x", std::to_string(x));
+        double y = calc::evaluate(expression);
+        Graph(tft, x, y, 45, 200, TFT_WIDTH, TFT_HEIGHT * 0.5, -10, 10, 1, -10, 10, 1, "Functions", "x", "sin(x)", TFT_BLUE, TFT_RED, TFT_BLACK, TFT_BLACK, TFT_WHITE, display1);
+    }
+
+    delay(100);
+
+    tft.fillScreen(TFT_WHITE);
+    for (x = -1; x <= 1; x += .001) {
+        y = erf(x);
+        Graph(tft, x, y, 45, 200, TFT_WIDTH, TFT_HEIGHT * 0.5, -1, 1, 1, -1, 1, 1, "Functions", "x", "erf(x)", TFT_BLUE, TFT_RED, TFT_BLACK, TFT_BLACK, TFT_WHITE, display2);
+    }
+
 }
 
 // Function to print a 24-bit number in binary with leading zeros
@@ -163,7 +202,11 @@ void printBits(uint32_t value, byte numBits) {
     }
 }
 
+// Global variable to hold the current expression
+String currentExpression = "";
+
 void loop() {
+    /*
     // Step 1: Sample
     digitalWrite(latchPin, LOW);
     digitalWrite(latchPin, HIGH);
@@ -177,30 +220,22 @@ void loop() {
         digitalWrite(clockPin, LOW);
     }
 
-    String result = analyzeBytes(buttonBits);
-    tft.fillScreen(TFT_WHITE);
-    tft.setCursor(0,2);
-    tft.setTextSize(10);
-    char buf[50];
-    std::string expression1 = "pi*8";
-    sprintf(buf, "%.9f", calc::evaluate(expression1)); // This will format the float to 9 decimal places
-    tft.print(buf);
-    delay(5000);
+    // Build the expression from the button bits
+    String newSymbol = buildExpression(buttonBits);
+    currentExpression += newSymbol; // Append the new symbol to the current expression
 
     // Print the button bits on the TFT display
-    tft.fillScreen(TFT_BLACK);
     tft.setCursor(0, 0);
     tft.print("Button Bits: ");
     printBits(buttonBits, numBits); // Use the new function to print the bits
     tft.println();
 
-    Serial.println(result);
+    // Print the current expression on the TFT display
+    tft.print("f1: " + currentExpression);
+    tft.println();
 
-    // Interpret the button bits
-    // TODO: Update your switch cases to handle 24-bit values
-    // ...
+    // Print the current expression to the serial monitor
+    Serial.println(currentExpression);
+     */
 
-    tft.print(expression);
-
-    delay(100);
 }
