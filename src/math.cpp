@@ -91,12 +91,25 @@ double sinc(double x) {
     return sin(x)/x;
 }
 
+double auxiliaryTrigIntegalF(double x) {
+    double z = std::abs(x);
+    double p1 = 
+}
+
+double auxiliaryTrigIntegalG(double x) {
+    
+}
+
 double sineIntegral(double x) {
-    double result = 0.0;
-    for(int i = 0; i < 1000; i++) {
-        result += pow(-1, i) * pow(x, 2*i+1) / ((2*i+1) * gamma(2*i+2));
+    double z = std::abs(x);
+    double j = 0.0;
+    if (z<=4) {
+        double p1 = 1-4.54393409816329991e-2*pow(z,2)+1.15457225751016682e-3*pow(z,4)-1.41018536821330254e-5*pow(z,6)+9.43280809438713025e-8*pow(z,8)-3.53201978997168357e-10*pow(z,10)+7.08240282274875911e-13*pow(z,12)-6.05338212010422477e-16*pow(z,14);
+        double p2 = 1+1.01162145739225565e-2*pow(z,2)+4.99175116169755106e-5*pow(z,4)+1.55654986308745614e-7*pow(z,6)+3.28067571055789734e-10*pow(z,8)+4.5049097575386581e-13*pow(z,10)+3.21107051193712168e-16*pow(z,12);
+    j = p1/p2;
+    } else {
+        
     }
-    return result;
 }
 
 double cosineIntegral(double x) {
