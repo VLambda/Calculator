@@ -160,6 +160,26 @@ std::string replaceAll(std::string str, const std::string& from, const std::stri
     return str;
 }
 
+void plotFunction(String printedString, std::string evaluateString) {
+    for (x = -10; x <= 10; x += .01) {
+        std::string expression = "atanh(sin(x))"; // Your generic string expression
+        expression = replaceAll(evaluateString, "x", std::to_string(x));
+        double y = calc::evaluate(expression);
+        Graph(tft, x, y, 45, 200, TFT_WIDTH, TFT_HEIGHT * 0.5, -10, 10, 1, -10, 10, 1, "Functions", "x", printedString, TFT_BLUE, TFT_RED, TFT_BLACK, TFT_BLACK, TFT_WHITE, display1);
+    }
+}
+
+void commandByte(uint32_t buttonBits) {
+    case 0b111111111111111100111111:
+        printedExpression = "";
+        evaluateExpression = "";
+        break;
+    case 0b111111111111111111111110:
+        plotFunction(printedExpression, evaluateExpression);
+        break;
+    default:
+        break;
+}
 void setup() {
     Serial.begin(9600);
     pinMode(dataPin, INPUT_PULLUP);
@@ -209,6 +229,7 @@ void printBits(uint32_t value, byte numBits) {
 
 // Global variable to hold the current expression
 String printedExpression = "";
+std::string evaluateExpression = "";
 
 // Define the last button state, and the last debounce time
 uint32_t lastButtonBits = 0;
