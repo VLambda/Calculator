@@ -162,7 +162,7 @@ std::string replaceAll(std::string str, const std::string& from, const std::stri
 
 void setup() {
     Serial.begin(9600);
-    pinMode(dataPin, INPUT_PULLDOWN);
+    pinMode(dataPin, INPUT_PULLUP);
     pinMode(clockPin, OUTPUT);
     pinMode(latchPin, OUTPUT);
     tft.init();
@@ -188,10 +188,15 @@ void setup() {
     delay(100);
 
     tft.fillScreen(TFT_WHITE);
-    for (x = -1; x <= 1; x += .001) {
+    for (x = -1; x <= 1; x += .01) {
         y = erf(x);
         Graph(tft, x, y, 45, 200, TFT_WIDTH, TFT_HEIGHT * 0.5, -1, 1, 1, -1, 1, 1, "Functions", "x", "erf(x)", TFT_BLUE, TFT_RED, TFT_BLACK, TFT_BLACK, TFT_WHITE, display2);
     }
+
+    delay(100);
+
+    tft.fillScreen(TFT_WHITE);
+    tft.setTextColor(TFT_BLACK);
 
 }
 
@@ -203,10 +208,14 @@ void printBits(uint32_t value, byte numBits) {
 }
 
 // Global variable to hold the current expression
-String currentExpression = "";
+String printedExpression = "";
+
+// Define the last button state, and the last debounce time
+uint32_t lastButtonBits = 0;
+unsigned long lastDebounceTime = 0;
+unsigned long debounceDelay = 50; // the debounce time in milliseconds
 
 void loop() {
-    /*
     // Step 1: Sample
     digitalWrite(latchPin, LOW);
     digitalWrite(latchPin, HIGH);
@@ -220,9 +229,24 @@ void loop() {
         digitalWrite(clockPin, LOW);
     }
 
-    // Build the expression from the button bits
-    String newSymbol = buildExpression(buttonBits);
-    currentExpression += newSymbol; // Append the new symbol to the current expression
+    // Check if button state has changed
+    if (buttonBits != lastButtonBits) {
+        // Reset the debounce timer
+        lastDebounceTime = millis();
+    }
+
+    if ((millis() - lastDebounceTime) > debounceDelay) {
+        // If the new button state has lasted for longer than the debounce delay, accept it
+        if (buttonBits != lastButtonBits) {
+            // Here, the button state has changed
+            printedExpression = buildExpression(buttonBits, printedExpression);
+            }
+    }
+
+    // Save the button state for next time through the loop
+    lastButtonBits = buttonBits;
+
+    printedExpression = buildExpression(buttonBits, printedExpression);
 
     // Print the button bits on the TFT display
     tft.setCursor(0, 0);
@@ -231,11 +255,11 @@ void loop() {
     tft.println();
 
     // Print the current expression on the TFT display
-    tft.print("f1: " + currentExpression);
+    tft.print("f1: " + printedExpression);
     tft.println();
 
     // Print the current expression to the serial monitor
-    Serial.println(currentExpression);
-     */
-
+    Serial.println(printedExpression);
+    delay(100);
 }
+

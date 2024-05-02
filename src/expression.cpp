@@ -91,7 +91,7 @@ String analyzeBytes(uint32_t buttonBits) {
     return result;
 }
 
-String buildExpression(uint32_t buttonBits) {
+String buildExpression(uint32_t buttonBits, String expression) {
     String result = ""; // Initialize an empty result string
 
     // Interpret the button bits using a switch statement
@@ -147,10 +147,34 @@ String buildExpression(uint32_t buttonBits) {
         case 0b111111111111111111111101:
             result = "3";
             break;
+        case 0b111111111111111101011111:
+            result = "^2";
+            break;
+        case 0b111111111111111001111111:
+            result = "-";
+            break;
+        case 0b111111111110111101111111:
+            result = "^-1";
+            break;
+        case 0b111111111101111101111111:
+            result = "^(1/2)";
+            break;
+        case 0b111111101111111101111111:
+            result = "*10^";
+            break;
+        case 0b111101111111111101111111:
+            result = "ln(";
+            break;
+        case 0b111011111111111101111111:
+            result = ")";
+            break;
+        case 0b110111111111111101111111:
+            result = "(";
+            break;
         default:
             // Handle unrecognized button combinations
             break;
     }
 
-    return result;
+    return expression + result;
 }

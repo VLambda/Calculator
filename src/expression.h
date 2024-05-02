@@ -12,6 +12,6 @@ class expression {
 };
 
 String analyzeBytes(uint32_t buttonBits);
-String buildExpression(uint32_t buttonBits);
+String buildExpression(uint32_t buttonBits, String expression);
 
 #endif //UNTITLED2_EXPRESSION_H
